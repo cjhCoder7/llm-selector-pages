@@ -283,6 +283,69 @@ function updateVisualization(probabilities) {
     });
 }
 
+// 添加彩带效果
+function triggerConfetti() {
+    const submitBtn = document.getElementById("submit-btn");
+    const rect = submitBtn.getBoundingClientRect();
+    const buttonCenter = {
+        x: (rect.left + rect.right) / 2 / window.innerWidth,
+        y: (rect.top + rect.bottom) / 2 / window.innerHeight
+    };
+
+    const count = 200;
+    const defaults = {
+        origin: buttonCenter,
+        zIndex: 9999,
+        gravity: 2,
+        disableForReducedMotion: true
+    };
+
+    function fire(particleRatio, opts) {
+        confetti({
+            ...defaults,
+            ...opts,
+            particleCount: Math.floor(count * particleRatio),
+            scalar: 0.8,
+            spread: 45,
+            drift: 0,
+            ticks: 200
+        });
+    }
+
+    fire(0.25, {
+        spread: 15,
+        startVelocity: 25,
+        decay: 0.92,
+        scalar: 0.6
+    });
+
+    fire(0.2, {
+        spread: 30,
+        decay: 0.91,
+        scalar: 0.6
+    });
+
+    fire(0.35, {
+        spread: 45,
+        decay: 0.92,
+        scalar: 0.7
+    });
+
+    fire(0.1, {
+        spread: 60,
+        startVelocity: 15,
+        decay: 0.92,
+        scalar: 0.7
+    });
+
+    fire(0.1, {
+        spread: 60,
+        startVelocity: 25,
+        decay: 0.91,
+        scalar: 0.8
+    });
+}
+
 // 提交按钮逻辑
 async function handleSubmit() {
     const question = document.getElementById("question-input").value.trim();
@@ -315,12 +378,14 @@ async function handleSubmit() {
         });
         const data = await response.json();
         updateVisualization(data.probabilities);
+        triggerConfetti(); // 添加彩带效果
     } catch (err) {
         console.error("Error:", err);
         const mockProbabilities = models.map(() => Math.random());
         const sum = mockProbabilities.reduce((a, b) => a + b, 0);
         const normalizedProbabilities = mockProbabilities.map(p => (p / sum));
         updateVisualization(normalizedProbabilities);
+        triggerConfetti(); // 即使是模拟数据也添加彩带效果
     } finally {
         gsap.to(submitBtn, {
             scale: 1,
