@@ -68,8 +68,7 @@ async function loadMarkdownDoc() {
 
 // 检测系统颜色模式
 function isDarkMode() {
-    return document.documentElement.dataset.theme === 'dark' ||
-        (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    return document.documentElement.dataset.theme === 'dark';
 }
 
 // 创建渐变色
@@ -183,15 +182,6 @@ function initializeChart() {
         },
     });
 
-    // 监听系统颜色模式变化
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-        const newGradients = createGradients(ctx);
-        chart.data.datasets[0].backgroundColor = newGradients;
-        chart.data.datasets[0].borderColor = isDarkMode() ? '#2d2d2f' : '#ffffff';
-        chart.options.plugins.legend.labels.color = isDarkMode() ? '#f5f5f7' : '#1d1d1f';
-        chart.update();
-    });
-
     return chart;
 }
 
@@ -292,7 +282,7 @@ function triggerConfetti() {
         y: (rect.top + rect.bottom) / 2 / window.innerHeight
     };
 
-    const count = 200;
+    const count = 100;
     const defaults = {
         origin: buttonCenter,
         zIndex: 9999,
@@ -426,7 +416,7 @@ function updateProgressBar() {
         // 使用GSAP实现平滑动画
         gsap.to(progressBar, {
             width: `${Math.min(progress, 100)}%`,
-            duration: 0.3,
+            duration: 0.1,
             ease: "power2.out"
         });
 
@@ -459,8 +449,8 @@ function toggleTheme() {
     // 使用GSAP添加过渡动画
     gsap.to('body', {
         backgroundColor: isDark ? '#000000' : '#fbfbfd',
-        duration: 0.5,
-        ease: 'power2.inOut'
+        duration: 0.25,
+        ease: "power2.inOut"
     });
 
     // 更新图表主题
