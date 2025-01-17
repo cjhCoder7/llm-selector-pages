@@ -41,9 +41,13 @@ const gradientPairs = {
 };
 
 // 初始化 Markdown-it
+// 调用全局的markdown-it函数来创建一个新的 Markdown 解析器实例。
 const md = window.markdownit({
+    // 允许在 Markdown 中解析和渲染 HTML 标签。如果为false，则会忽略 Markdown 中的 HTML 标签。
     html: true,
+    // 自动将文本中的 URL 转换为可点击的链接。
     linkify: true,
+    // 启用一些排版相关的替换，比如将直引号替换为弯引号等。
     typographer: true
 });
 
@@ -52,6 +56,7 @@ async function loadMarkdownDoc() {
     try {
         const response = await fetch('document.md');
         const text = await response.text();
+        // 使用markdown-it解析器的render方法将获取到的 Markdown 文本转换为 HTML，并将其插入到 ID 为markdown-content的元素中。
         document.getElementById("markdown-content").innerHTML = md.render(text);
     } catch (err) {
         console.error('Error loading markdown:', err);
@@ -75,7 +80,9 @@ function isDarkMode() {
 function createGradients(ctx) {
     const colorScheme = isDarkMode() ? 'dark' : 'light';
     return gradientPairs[colorScheme].map((colors, index) => {
+        // ctx 是一个 Canvas 绘图上下文对象，createLinearGradient 方法用于创建一个线性渐变对象，参数 (0, 0, 400, 400) 表示渐变的起始点和结束点的坐标
         const gradient = ctx.createLinearGradient(0, 0, 400, 400);
+        // 0 表示渐变的起始位置，1 表示渐变的结束位置
         gradient.addColorStop(0, colors[0]);
         gradient.addColorStop(1, colors[1]);
         return gradient;
@@ -84,10 +91,13 @@ function createGradients(ctx) {
 
 // 初始化扇形图
 function initializeChart() {
+    // 获取 canvas 元素的 2D 绘图上下文
     const ctx = document.getElementById("pie-chart").getContext("2d");
     const gradients = createGradients(ctx);
 
+    // 使用 Chart.js 创建一个新的图表实例
     const chart = new Chart(ctx, {
+        // 指定图表类型为环形图
         type: "doughnut",
         data: {
             labels: models.map(model => model.name),
@@ -97,13 +107,18 @@ function initializeChart() {
                 borderWidth: 2,
                 borderColor: isDarkMode() ? '#2d2d2f' : '#ffffff',
                 borderRadius: 5,
+                // 元素之间的间距
                 spacing: 3,
+                // 鼠标悬停时的偏移量
                 hoverOffset: 15
             }],
         },
         options: {
+            // 自适应布局，图表会根据容器大小自动调整
             responsive: true,
+            // 不保持宽高比
             maintainAspectRatio: false,
+            // 环形图的内圈切割比例
             cutout: '60%',
             layout: {
                 padding: {
@@ -114,6 +129,7 @@ function initializeChart() {
                 }
             },
             plugins: {
+                // 图例配置
                 legend: {
                     position: 'right',
                     labels: {
@@ -122,7 +138,8 @@ function initializeChart() {
                         font: {
                             size: 14,
                             weight: '600',
-                            family: '-apple-system, BlinkMacSystemFont, "SF Pro Text"'
+                            family: '-apple-system, BlinkMacSystemFont, "SF Pro Text"',
+                            // color: isDarkMode() ? '#ffffff' : '#1d1d1f'
                         },
                         generateLabels: function (chart) {
                             const data = chart.data;
@@ -135,6 +152,7 @@ function initializeChart() {
                                         fillStyle: data.datasets[0].backgroundColor[i],
                                         strokeStyle: isDarkMode() ? '#ffffff' : '#1d1d1f',
                                         lineWidth: 2,
+                                        // 不隐藏元素
                                         hidden: false,
                                         index: i
                                     };
@@ -142,10 +160,12 @@ function initializeChart() {
                             }
                             return [];
                         },
+                        // 使用点样式，指定了图例标记的形状为圆形
                         usePointStyle: true,
                         pointStyle: 'circle'
                     }
                 },
+                // 提示框配置
                 tooltip: {
                     backgroundColor: isDarkMode() ? 'rgba(45, 45, 47, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                     titleColor: isDarkMode() ? '#f5f5f7' : '#1d1d1f',
@@ -156,8 +176,10 @@ function initializeChart() {
                     padding: 12,
                     boxPadding: 6,
                     usePointStyle: true,
+                    // 提示框标签回调函数
                     callbacks: {
                         label: function (context) {
+                            // 获取原始数据值
                             const value = context.raw;
                             const percentage = Math.round(value * 100);
                             return `${context.label}: ${percentage}%`;
@@ -166,17 +188,24 @@ function initializeChart() {
                 }
             },
             animation: {
+                // 动画持续时间
                 duration: 1500,
+                // 动画缓动效果
                 easing: 'easeInOutQuart'
             },
             elements: {
+                // 弧形元素配置
                 arc: {
                     borderWidth: 2
                 }
             },
+            // 交互配置
             interaction: {
+                // 交互模式为最近元素
                 mode: 'nearest',
+                // 不要求元素相交
                 intersect: false,
+                // 交互坐标轴为 xy
                 axis: 'xy'
             }
         },
@@ -465,7 +494,40 @@ function updateChartTheme(theme) {
 
     pieChart.data.datasets[0].backgroundColor = newGradients;
     pieChart.data.datasets[0].borderColor = isDark ? '#2d2d2f' : '#ffffff';
-    pieChart.options.plugins.legend.labels.color = isDark ? '#f5f5f7' : '#1d1d1f';
+
+    // 更新图例配置
+    pieChart.options.plugins.legend.labels = {
+        padding: 20,
+        color: isDark ? '#ffffff' : '#1d1d1f',
+        font: {
+            size: 14,
+            weight: '600',
+            family: '-apple-system, BlinkMacSystemFont, "SF Pro Text"'
+        },
+        generateLabels: function (chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                    const value = data.datasets[0].data[i];
+                    const percentage = value ? Math.round(value * 100) : 0;
+                    return {
+                        text: `${label} (${percentage}%)`,
+                        padding: 20,
+                        fillStyle: data.datasets[0].backgroundColor[i],
+                        fontColor: isDark ? '#ffffff' : '#1d1d1f',
+                        strokeStyle: isDark ? '#ffffff' : '#1d1d1f',
+                        lineWidth: 2,
+                        hidden: false,
+                        index: i
+                    };
+                });
+            }
+            return [];
+        },
+        usePointStyle: true,
+        pointStyle: 'circle'
+    };
+
     pieChart.options.plugins.tooltip.backgroundColor = isDark ? 'rgba(45, 45, 47, 0.9)' : 'rgba(255, 255, 255, 0.9)';
     pieChart.options.plugins.tooltip.titleColor = isDark ? '#f5f5f7' : '#1d1d1f';
     pieChart.options.plugins.tooltip.bodyColor = isDark ? '#f5f5f7' : '#1d1d1f';

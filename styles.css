@@ -1,6 +1,7 @@
 /* 全局样式 */
 :root {
     /* Light Theme Colors */
+    /* CSS变量必须使用--开头 */
     --primary-color: #0071e3;
     --primary-gradient: linear-gradient(135deg, #0071e3, #40a9ff);
     --secondary-color: #1d1d1f;
@@ -13,7 +14,7 @@
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
     --card-gradient: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
     --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-theme: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-theme: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --navbar-bg: rgba(255, 255, 255, 0.7);
     --navbar-border: rgba(0, 0, 0, 0.05);
     --scrollbar-thumb: rgba(0, 0, 0, 0.2);
@@ -27,13 +28,17 @@
     left: 0;
     width: 100%;
     height: 3px;
+    /* 设置背景颜色为rgba(0, 0, 0, 0.05)，透明度为0.5 */
     background: rgba(0, 0, 0, 0.05);
+    /* 设置z-index为2000，使其在页面元素的堆叠顺序中处于较高位置，防止被其他元素覆盖 */
     z-index: 2000;
+    /* 当超出容器范围时，隐藏滚动条 */
     overflow: hidden;
     transition: var(--transition-base);
 }
 
 [data-theme="dark"] .progress-container {
+    /* 当页面的 data-theme 属性值为 "dark" 时，将进度条容器的背景色设置为半透明的白色，透明度为0.05，以适应深色主题 */
     background: rgba(255, 255, 255, 0.05);
 }
 
@@ -44,16 +49,21 @@
     height: 100%;
     width: 0;
     background: var(--primary-gradient);
-    transition: width 0.1s ease;
+    /* 使用更平滑的缓动曲线 */
+    transition: width 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 为进度条添加一个阴影效果，水平和垂直偏移都为0，模糊半径为8px，阴影颜色为半透明的蓝色（rgba(0, 113, 227, 0.4)） */
     box-shadow: 0 0 8px rgba(0, 113, 227, 0.4);
+    /* 应用模糊滤镜效果，模糊半径为8px，使进度条有一定的模糊感，增强视觉效果 */
     backdrop-filter: blur(8px);
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: var(--background-color);
+    /* 100vh 表示视口高度的 100%，即浏览器窗口的高度 */
     min-height: 100vh;
     color: var(--text-primary);
+    /* 用于控制字体的抗锯齿效果 */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: background-color var(--transition-theme), color var(--transition-theme);
@@ -62,9 +72,12 @@ body {
 
 /* 导航栏样式 */
 .navbar {
+    /* 应用模糊效果，创建一个毛玻璃效果的背景，模糊半径为20px */
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    /* 设置导航栏的背景颜色，使用CSS变量`--navbar-bg`的值，`!important`表示这个样式具有最高优先级，会覆盖其他样式 */
     background-color: var(--navbar-bg) !important;
+    /* 给导航栏底部添加1px的实线边框，边框颜色使用CSS变量`--navbar-border`的值 */
     border-bottom: 1px solid var(--navbar-border);
     height: 64px;
 }
@@ -72,12 +85,15 @@ body {
 .navbar-brand {
     font-weight: 600;
     font-size: 1.25rem;
+    /* 设置字符间距为-0.5px，负的字符间距会让文字看起来更紧凑 */
     letter-spacing: -0.5px;
+    /* 设置文字颜色，使用CSS变量`--text-primary`的值，`!important`表示这个样式具有最高优先级，会覆盖其他样式 */
     color: var(--text-primary) !important;
 }
 
 /* 主要内容区域 */
 .container-fluid {
+    /* 当浏览器窗口足够宽时，该元素的宽度最多可以扩展到 1800px，如果浏览器窗口宽度小于 1800px，元素的宽度会自适应窗口宽度。 */
     max-width: 1800px;
     padding: 0 40px;
     margin-top: 4rem;
@@ -88,6 +104,7 @@ body {
     position: relative;
     margin: 2rem auto;
     height: 700px;
+    /* 元素的宽度为其父元素宽度的100% */
     width: 100%;
     max-width: 1400px;
     padding: 2rem;
@@ -110,8 +127,10 @@ body {
     background: var(--card-background);
 }
 
+/* 当输入框组内部的某个元素（如输入框）获得焦点时，该样式会生效 */
 .input-group:focus-within {
     box-shadow: var(--shadow-md);
+    /* 当输入框组内部元素获得焦点时，将输入框组在垂直方向上向上移动 1 像素，同样是为了给用户一个视觉反馈 */
     transform: translateY(-1px);
 }
 
@@ -119,16 +138,16 @@ body {
     border: none;
     padding: 1.25rem 1.5rem;
     font-size: 1.125rem;
+    /* 背景设置为透明 */
     background: transparent;
     color: var(--text-primary);
 }
 
 .form-control:focus {
     box-shadow: none;
-    background: transparent;
-    color: var(--text-primary);
 }
 
+/* 表单输入框占位符样式 */
 .form-control::placeholder {
     color: var(--text-secondary);
 }
@@ -147,6 +166,7 @@ body {
 .btn-primary:hover {
     transform: translateY(-1px) scale(1.02);
     box-shadow: var(--shadow-md);
+    /* 当鼠标悬停在按钮上时，将按钮的亮度提高 10%，使其看起来更亮。 */
     filter: brightness(1.1);
 }
 
@@ -160,6 +180,7 @@ body {
     font-weight: 600;
     margin-bottom: 1.5rem;
     color: var(--text-primary);
+    /* 文本居中对齐 */
     text-align: center;
 }
 
@@ -184,23 +205,30 @@ body {
     border-radius: 20px;
     margin: 1rem;
     transition: var(--transition-base);
+    /* 宽高比为 1:1，保证容器是正方形。 */
     aspect-ratio: 1;
     display: flex;
+    /* 水平居中和垂直居中 */
     align-items: center;
     justify-content: center;
 }
 
+/* 卡片图片的样式 */
 .card-img-top {
     transition: var(--transition-base);
+    /* 添加一个投影效果。 */
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
     width: 100%;
     height: 100%;
+    /* 图片会在保持宽高比的情况下，尽可能填充容器，不会裁剪图片。 */
     object-fit: contain;
     padding: 1rem;
 }
 
+/* 当鼠标悬停在模型卡片上时，卡片内图片的样式变化。 */
 .model-card:hover .card-img-top {
     transform: scale(1.1) translateY(-5px);
+    /* 投影效果更明显，增强立体感。 */
     filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
 }
 
@@ -218,6 +246,7 @@ body {
     text-align: center;
 }
 
+/* 概率徽章的样式。 */
 .probability-badge {
     position: absolute;
     top: 1rem;
@@ -236,16 +265,22 @@ body {
 
 /* 文档卡片样式 */
 .documentation-card {
+    /* 将元素设置为粘性定位，固定在屏幕上 */
     position: sticky;
     top: 90px;
+    /* 计算元素的高度，为视口高度减去120px */
     height: calc(100vh - 120px);
+    /* 当内容超出元素高度时，在垂直方向上显示滚动条 */
     overflow-y: auto;
     border: none;
     border-radius: 24px;
     box-shadow: var(--shadow-md);
     background: var(--card-background);
+    /* 设置滚动条的宽度为细 */
     scrollbar-width: thin;
+    /* 设置滚动条的颜色，滑块颜色为CSS变量`--scrollbar-thumb`，轨道颜色为透明 */
     scrollbar-color: var(--scrollbar-thumb) transparent;
+    /* 设置背景颜色的过渡效果，过渡时间由CSS变量`--transition-base`定义 */
     transition: background-color var(--transition-base);
 }
 
@@ -258,6 +293,7 @@ body {
 }
 
 .markdown-render {
+    /* 设置行高为1.7 */
     line-height: 1.7;
     color: var(--text-primary);
     font-size: 1rem;
@@ -268,6 +304,7 @@ body {
     font-weight: 700;
     margin-bottom: 2rem;
     color: var(--text-primary);
+    /* 字符间距为-0.5px */
     letter-spacing: -0.5px;
     text-align: center;
 }
@@ -278,6 +315,7 @@ body {
     margin: 2.5rem 0 1.5rem;
     color: var(--text-primary);
     background: var(--primary-gradient);
+    /* 将背景裁剪到文本区域 */
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -300,8 +338,9 @@ body {
     color: var(--text-secondary);
 }
 
-/* 高亮效果 */
+/* 高亮效果
 .highlight {
+    glow是动画的名称，2s是动画的持续时间，infinite是动画的循环次数为无限次
     animation: glow 2s infinite;
 }
 
@@ -317,7 +356,7 @@ body {
     100% {
         box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
     }
-}
+} */
 
 /* 加载动画 */
 #loading-spinner {
@@ -346,7 +385,7 @@ body {
     background: var(--scrollbar-thumb-hover);
 }
 
-/* 图表样式优化 */
+/* 图表样式优化，#是id选择器 */
 #pie-chart {
     max-width: 100%;
     height: 100% !important;
@@ -370,10 +409,14 @@ body {
         radial-gradient(circle at 25% 60px, #fff, #fff 0.5px, transparent 1.5px, transparent),
         radial-gradient(circle at 7% 35px, #fff, #fff 0.5px, transparent 1.5px, transparent),
         linear-gradient(90deg, #2b303e, #2b303e 50%, #5a81b4 50%, #5a81b4);
+    /* 使用多个径向渐变（radial-gradient）和一个线性渐变（linear-gradient）来创建复杂的背景效果。
+    每个径向渐变创建一个白色的圆形，然后在一定半径后变为透明。
+    线性渐变从左到右（90度），前半部分是 #2b303e 颜色，后半部分是 #5a81b4 颜色 */
     background-repeat: no-repeat;
     background-size: 200% 100%;
     background-position: 100% 0;
     border-radius: 90px;
+    /* 为按钮添加多个阴影效果，包括外阴影和内阴影，以增强立体感 */
     box-shadow:
         0 -3px 4px #999,
         inset 0 3px 5px #333,
@@ -384,6 +427,7 @@ body {
     transition: var(--transition-theme);
     border: none;
     transform: scale(0.3);
+    /* 设置变形的原点为按钮的右侧中心点 */
     transform-origin: right center;
     margin-right: 1rem;
 }
@@ -400,6 +444,7 @@ body {
     height: 75px;
     border-radius: 50%;
     background: #e9cb50;
+    /* 相当于top、right、bottom、left都为7.5px */
     inset: 7.5px;
     box-shadow:
         0 0 5px #333,
@@ -432,6 +477,7 @@ body {
 }
 
 #theme-toggle:hover::before {
+    /* 调整对比度和亮度 */
     filter: contrast(90%) brightness(110%);
     scale: 1.05;
 }
